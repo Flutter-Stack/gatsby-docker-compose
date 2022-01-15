@@ -1,0 +1,26 @@
+FROM node:alpine
+# RUN gatsby new . https://github.com/gatsbyjs/gatsby-starter-default
+
+RUN set -x && \
+	echo '### install build tools and python' && \
+        apk update && \
+	apk add --no-cache git && \
+	apk add --no-cache --virtual .python python3 && \
+        apk add --no-cache --virtual .build-tools gcc g++ make && \
+        yarn global add gatsby-cli && \
+	echo '### cleanup' && \
+	cd / && \
+	rm -rf /var/cache/apk && \
+	mkdir /var/cache/apk
+
+WORKDIR /app
+# COPY the package.json file, update any deps and install them
+COPY package.json .
+RUN npm update
+RUN npm install
+
+# copy the whole source folder(the dir is relative to the Dockerfile
+COPY . .
+
+# ENTRYPOINT ["/bin/sh", "-c"]
+EXPOSE 8000

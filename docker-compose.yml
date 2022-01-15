@@ -1,0 +1,14 @@
+version: "3"
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    container_name: drupal-gatsby
+    restart: always
+    volumes:
+      - ./client/src:/app/src # Links the source files to the running container
+      - /usr/src/app/node_modules
+    command: gatsby develop --host=0.0.0.0 -p 8000
+    ports:
+      - "3007:8000"
